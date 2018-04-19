@@ -1,0 +1,86 @@
+#!/bin/bash
+
+python<<EOF
+import numpy as np
+import matplotlib
+matplotlib.rcParams['text.usetex'] = True
+matplotlib.rcParams['text.latex.unicode'] = True
+import matplotlib.pyplot as plt
+from matplotlib import colors, ticker, cm
+
+def readinputdata(filename):
+		fichero = open(filename,'r')
+		f = []
+		line = '0'
+		while len(line)>0:
+			line = np.array(fichero.readline().split()).astype(float)
+			if len(line)>0:
+				f.append(line)
+		fichero.close()
+		return np.array(f)
+
+
+data = readinputdata("DATOS$1")
+
+xx = data[:,0]
+yy = data[:,1]
+n = data[:,2]
+p = data[:,3]
+u = data[:,4]
+v = data[:,5]
+
+n = n.reshape(101,101)
+n = n.T
+
+p = p.reshape(101,101)
+p = p.T
+
+u = u.reshape(101,101)
+u = u.T
+
+v = v.reshape(101,101)
+v = v.T
+
+nx = np.linspace(0, 1, np.sqrt(len(xx)))
+ny = np.linspace(0, 1, np.sqrt(len(yy)))
+X,Y = np.meshgrid(nx,ny)
+
+plt.rc('font', family='serif')
+plt.rc('text', usetex=True)
+
+plt.xlabel(r'\$x\$',fontsize=12)
+plt.ylabel(r'\$y\$',fontsize=12)
+
+levels = np.linspace(0.0,10,400)
+
+cn = plt.contourf(X,Y,n,interpolation='sinc',levels=levels,cmap=plt.cm.gist_heat)
+cbarn = plt.colorbar(cn, format="%.2f")
+cbarn.set_label(r'Density \$n\$',rotation=270,fontsize=12,labelpad=20)
+plt.savefig("N$2_py.png")
+plt.close()
+
+levels = np.linspace(np.min(p),np.max(p),400)
+
+cp = plt.contourf(X,Y,p,interpolation='bicubic',levels=levels,cmap=plt.cm.gist_heat)
+cbarp = plt.colorbar(cp, format="%.2f")
+cbarp.set_label(r'Pressure \$p\$',rotation=270,fontsize=12,labelpad=20)
+plt.savefig("P$2_py.png")
+plt.close()
+
+levels = np.linspace(-0.6,0.6,400)
+
+cu = plt.contourf(X,Y,u,interpolation='sinc',levels=levels,cmap=plt.cm.YlOrBr)
+cbaru = plt.colorbar(cu, format="%.2f")
+cbaru.set_label(r'Velocity \$v_x\$',rotation=270,fontsize=12,labelpad=20)
+plt.savefig("Vx$2_py.png")
+plt.close()
+
+levels = np.linspace(-0.3,0.3,400)
+
+cv = plt.contourf(X,Y,v,interpolation='bicubic',levels=levels,cmap=plt.cm.hot)
+cbarv = plt.colorbar(cv, format="%.2f")
+cbarv.set_label(r'Velocity \$v_y\$',rotation=270,fontsize=12,labelpad=20)
+plt.savefig("Vy$2_py.png")
+plt.close()
+
+EOF

@@ -1,0 +1,5 @@
+#!/bin/bash
+mencoder "mf://N*.png"  -oac copy -mf fps=$1 -o test_N_fps$1.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800 
+mencoder "mf://P*.png"  -oac copy -mf fps=$1 -o test_P_fps$1.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800 
+mencoder "mf://Vx*.png"  -oac copy -mf fps=$1 -o test_Vx_fps$1.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800 
+mencoder "mf://Vy*.png"  -oac copy -mf fps=$1 -o test_Vy_fps$1.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=800 

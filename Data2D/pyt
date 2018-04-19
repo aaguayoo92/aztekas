@@ -1,0 +1,138 @@
+#!/bin/bash
+
+python<<EOF
+import numpy as np
+import matplotlib
+matplotlib.rcParams['text.usetex'] = True
+matplotlib.rcParams['text.latex.unicode'] = True
+import matplotlib.pyplot as plt
+from matplotlib import colors, ticker, cm
+import linecache
+from PIL import Image
+
+#Time reading
+time = float(linecache.getline("DATA_$1_2D.dat",2))
+
+#Data reading
+xx, yy, n, p, u, v = np.loadtxt("DATA_$1_2D.dat",skiprows=3,unpack=True)
+
+xxneg = -xx
+
+l = len(xx)
+l = np.sqrt(l)
+l = int(l)
+
+n = n.reshape(101,401)
+n = n.T
+
+p = p.reshape(101,401)
+p = p.T
+
+u = u.reshape(101,401)
+u = u.T
+
+v = v.reshape(101,401)
+v = v.T
+
+nx = np.linspace(np.min(xx), np.max(xx), 101)
+ny = np.linspace(np.min(yy), np.max(yy), 401)
+X,Y = np.meshgrid(nx,ny)
+
+plt.rc('font', family='serif')
+plt.rc('text', usetex=True)
+
+plt.figure(figsize=(8,6),dpi=100)
+plt.xlabel(r'\$r\$',fontsize=12)
+plt.ylabel(r'\$z\$',fontsize=12)
+plt.title(r'Time = %.2f s'%time,fontsize=12)
+
+#Logaritmic linspace
+levels = np.linspace(-2.0,1.0,400)
+
+#Linear linspace
+#levels = np.linspace(0.0,30.0,400)
+
+#Space between vectors
+qx = 5
+qy = 5
+
+#Heat Colour - Axisymmetric
+cn = plt.contourf(X,Y,np.log10(n),levels=levels,cmap=plt.cm.gist_heat)
+cn = plt.contourf(-X,Y,np.log10(n),levels=levels,cmap=plt.cm.gist_heat)
+
+#Jet Colour - Axisymmetric
+#cn = plt.contourf(X,Y,np.log10(n),interpolation='sinc',levels=levels,cmap=plt.cm.jet)
+#cn = plt.contourf(-X,Y,np.log10(n),interpolation='sinc',levels=levels,cmap=plt.cm.jet)
+
+#Vertical colorbar
+cbarn = plt.colorbar(cn, format="%.2f")
+cbarn.set_label(r'Density \$\log \rho\$',rotation=270,fontsize=12,labelpad=20)
+
+#Horizontal colorbar
+#cbarn = plt.colorbar(cn, format="%.2f",orientation='horizontal')
+#cbarn.set_label(r'Density \$\log \rho\$',fontsize=12,labelpad=20)
+
+#Vector plotting
+#uut= u/np.sqrt(u**2 + v**2)
+#vvt= v/np.sqrt(u**2 + v**2)
+#uu = np.nan_to_num(uut)
+#vv = np.nan_to_num(vvt)
+#plt.quiver(X[::qx,::qy],Y[::qx,::qy],uu[::qx,::qy],vv[::qx,::qy],np.sqrt(uu[::qx,::qy]**2.0 + vv[::qx,::qy]**2.0),
+#		  units='width',scale=40.5)#,cmap='Reds')
+#plt.quiver(-X[::qx,::qy],Y[::qx,::qy],-uu[::qx,::qy],vv[::qx,::qy],np.sqrt(uu[::qx,::qy]**2.0 + vv[::qx,::qy]**2.0),
+#		  units='width',scale=40.5)#,cmap='Reds')
+
+#Rectangular graph
+plt.axes().set_aspect(1)
+
+#Graph name
+plt.savefig("N$2_py.png")
+plt.close()
+
+#levels = np.linspace(np.min(u),np.max(np.abs(u)),400)
+
+#cn = plt.contourf(X,Y,(u),interpolation='sinc',levels=levels,cmap=plt.cm.gist_heat)
+#cbarn = plt.colorbar(cn, format="%.2f")
+#cbarn.set_label(r'Velocity \$v_x\$',rotation=270,fontsize=12,labelpad=20)
+#plt.savefig("Vx$1_py.png")
+#plt.close()
+
+#levels = np.linspace(np.min(v),np.max(np.abs(v)),400)
+#
+#cn = plt.contourf(X,Y,(v),interpolation='sinc',levels=levels,cmap=plt.cm.gist_heat)
+#cbarn = plt.colorbar(cn, format="%.2f")
+#cbarn.set_label(r'Velocity \$v_y\$',rotation=270,fontsize=12,labelpad=20)
+#plt.savefig("Vy$1_py.png")
+#plt.close()
+
+#plt.figure(figsize=(8,6),dpi=100)
+#levels = np.linspace(0,np.max(np.abs(p)),400)
+
+#cp = plt.contourf(X,Y,p,interpolation='bicubic',levels=levels,cmap=plt.cm.gist_heat)
+#cbarp = plt.colorbar(cp, format="%.2e")
+#cbarp.set_label(r'Pressure \$p\$',rotation=270,fontsize=12,labelpad=20)
+#plt.savefig("P$2_py.png")
+#plt.close()
+
+#levels = np.linspace(0,np.max(np.abs(u)),400)
+
+#cu = plt.contourf(X,Y,np.abs(u),interpolation='sinc',levels=levels,cmap=plt.cm.YlOrBr)
+#cbaru = plt.colorbar(cu, format="%.2f")
+#cbaru.set_label(r'Velocity \$v_x\$',rotation=270,fontsize=12,labelpad=20)
+#plt.savefig("Vx$1_py.png")
+#plt.close()
+#
+#levels = np.linspace(0,np.max(np.abs(v)),400)
+#
+#cv = plt.contourf(X,Y,np.abs(v),interpolation='bicubic',levels=levels,cmap=plt.cm.hot)
+#cbarv = plt.colorbar(cv, format="%.2f")
+#cbarv.set_label(r'Velocity \$v_y\$',rotation=270,fontsize=12,labelpad=20)
+#plt.savefig("Vy$1_py.png")
+#plt.close()
+#
+
+#im = Image.open("N$2_py.png")
+#im = im.crop((200,0,780,600))
+#im.save("N$2_py.png")
+
+EOF

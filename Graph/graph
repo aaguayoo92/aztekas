@@ -1,0 +1,11 @@
+#!/bin/bash
+
+t=150;
+
+dat=1
+while [ $dat -lt $t ];
+do
+g=$(echo "scale=5; $dat/100000.0"| bc)
+./pyt $dat $g
+dat=$((dat+1))
+done
