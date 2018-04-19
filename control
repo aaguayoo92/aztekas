@@ -1,0 +1,29 @@
+#!/bin/bash
+#./Calcula_matrix 1>/dev/null
+#perl Functions.pl
+#gcc func_planarFVM1bis.c func_matrix.c func_dmatrix.c func_amatrix.c func_qvector.c func_fvector.c func_svector.c planar.c -lgsl -lgslcblas -lm -o3 -o aztekas
+#gcc planar.c ./functions/func_planarOUTPUT.c ./functions/func_planarREAD.c ./functions/func_planarMESH.c ./functions/func_planarINITIAL.c -lgsl -lgslcblas -lm -o3 -o aztekas
+#gcc planar.c func_planarREAD.c func_planarPOINTER.c func_planarMESH.c func_planarINITIAL.c func_planarBOUNDARIES.c func_planarOUTPUT.c -lgsl -lgslcblas -lm -o3 -o aztekas
+gcc -fopenmp main.c \
+alloc.c \
+array.c \
+mesh.c \
+initial.c \
+timestep.c \
+output.c \
+integration.c \
+pvrs-rk.c \
+flux.c \
+limiters.c \
+matrixes.c \
+boundaries.c \
+./HD/amatrix.c \
+./HD/dmmatrix.c \
+./HD/dnmatrix.c \
+./HD/domatrix.c \
+./HD/qvector.c \
+./HD/fvector.c \
+./HD/gvector.c \
+./HD/hvector.c \
+./HD/svector.c \
+-lm -Ofast -o aztekas
